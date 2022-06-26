@@ -3,25 +3,24 @@ import cv2
 import cv2.aruco as aruco
 
 
-def cam_test():
+def single_marker_estimation():
     # setting up the video feed source, dictionary of aruco markers and dictionary parameters
     cap = cv2.VideoCapture(0)
     aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
     parameters = aruco.DetectorParameters_create()
+    # intrinsic camera specific parameter matrix and distortion coefficients for correct pose estimation
+    mtx = np.array([[5.3434144579284975e+02, 0., 3.3915527836173959e+02],
+                    [0., 5.3468425881789324e+02, 2.3384359492532246e+02],
+                    [0., 0., 1.]], float)
+    dist = np.array([-2.8832098285875657e-01, 5.4107968489116441e-02,
+                     1.7350162244695508e-03, -2.6133389531953340e-04,
+                     2.0411046472667685e-01], float)
 
     while True:
         ret, frame = cap.read()
 
         # library use to detect aruco markers in a given frame with dictionary parameters
         corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, aruco_dict, parameters=parameters)
-
-        # intrinsic camera specific parameter matrix and distortion coefficients for correct pose estimation
-        mtx = np.array([[5.3434144579284975e+02, 0., 3.3915527836173959e+02],
-                        [0., 5.3468425881789324e+02, 2.3384359492532246e+02],
-                        [0., 0., 1.]], float)
-        dist = np.array([-2.8832098285875657e-01, 5.4107968489116441e-02,
-                         1.7350162244695508e-03, -2.6133389531953340e-04,
-                         2.0411046472667685e-01], float)
 
         if ids is not None:  # if aruco marker detected
             # single aruco marker pose estimation
@@ -44,4 +43,4 @@ def cam_test():
 
 
 if __name__ == '__main__':
-    cam_test()
+    single_marker_estimation()
